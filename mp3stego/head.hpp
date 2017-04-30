@@ -4,7 +4,6 @@
 #include "basehead.hpp"
 #include "rawhead.hpp"
 
-
 class Header : public BaseHeader{
 public:
 
@@ -16,7 +15,8 @@ public:
     bool crc_present() const;
     bool padding_present() const;
 
-    friend std::istream& operator>>(std::istream&, Header&);
+    friend std::istream& operator >>(std::istream&, Header&);
+
 private:
     bool correct = false;
     bool crc = false;

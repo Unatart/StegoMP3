@@ -10,5 +10,6 @@ HEADERS += \
     basehead.hpp \
     rawhead.hpp \
     head.hpp \
-    coder.hpp \
-    file_func.hpp
+    file_func.hpp \
+    mp3encoder.hpp \
+    mp3decoder.hpp

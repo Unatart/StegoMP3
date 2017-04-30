@@ -3,18 +3,19 @@
 
 #include "basehead.hpp"
 const unsigned KB = 1024;
+const unsigned B = 8;
 
 class  RawHeader : public BaseHeader{
 public:
     unsigned bitrate() const;
     unsigned samplerate() const;
-
     bool is_correct() const;
     bool crc_present() const;
     bool padding_present() const;
     bool is_valid_header() const;
 
     friend std::istream& operator >>(std::istream&, RawHeader&);
+    friend std::ofstream& operator <<(std::ofstream&, RawHeader&);
     void read_byte(std::ifstream&);
 
     const unsigned char& operator [](unsigned position) const;
@@ -110,7 +111,9 @@ void RawHeader::read_byte(std::ifstream& src) {
     for (unsigned i = 0; i < 3; ++i) {
         data[i] = data[i + 1];
     }
-    src >> data[3];
+    char buf;
+    src.get(buf);
+    data[3] = (unsigned char) buf;
 }
 
 const unsigned char& RawHeader::operator [](unsigned position) const {
@@ -135,6 +138,16 @@ std::istream& operator>>(std::istream& src, RawHeader& dst) {
     }
 
     return src;
+}
+
+std::ofstream& operator <<(std::ofstream& dst, RawHeader& src) {
+    char bufdata;
+    for (unsigned i = 0; i < RAW_HEADER_SIZE; ++i) {
+        bufdata = src.data[i];
+        dst.put(bufdata);
+    }
+
+    return dst;
 }
 
 

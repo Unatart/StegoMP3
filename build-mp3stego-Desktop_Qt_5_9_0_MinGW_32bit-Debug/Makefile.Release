@@ -51,8 +51,9 @@ OBJECTS       = release/main.o \
 DIST          =  basehead.hpp \
 		rawhead.hpp \
 		head.hpp \
-		coder.hpp \
-		file_func.hpp ..\mp3stego\main.cpp \
+		file_func.hpp \
+		mp3encoder.hpp \
+		mp3decoder.hpp ..\mp3stego\main.cpp \
 		..\mp3stego\file_func.cpp
 QMAKE_TARGET  = mp3stego
 DESTDIR        = release\ #avoid trailing-slash linebreak
@@ -104,7 +105,7 @@ compiler_clean:
 release/main.o: ../mp3stego/main.cpp ../mp3stego/head.hpp \
 		../mp3stego/basehead.hpp \
 		../mp3stego/rawhead.hpp \
-		../mp3stego/coder.hpp \
+		../mp3stego/mp3encoder.hpp \
 		../mp3stego/file_func.hpp
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\main.o ..\mp3stego\main.cpp
 
