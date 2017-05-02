@@ -14,5 +14,5 @@ void copy_file(std::ifstream& in, std::ofstream& out) {
 // now its ok
 void rewind_file(std::ifstream& in) {
     in.close();
-    in.open("C:/Users/Unatart/Desktop/mp3stego/MISSION COMPLETE.mp3", std::ios::in | std::ios::binary);
+    in.open("C:/Users/Unatart/Desktop/V2/mp3stego/MISSION COMPLETE.mp3", std::ios::in | std::ios::binary);
 }

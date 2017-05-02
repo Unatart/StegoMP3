@@ -76,6 +76,23 @@ bool mp3Encoder::encode(std::ifstream &in, std::ofstream &out, std::string messa
                 coding_byte = coding_byte & 0xFE;
             }
 
+            /*unsigned significant_bit = bit_message[step]*10 + bit_message[step+1];
+            step += 2;
+
+            if (significant_bit == 1){
+                coding_byte = coding_byte | 0x01;
+            }
+            if (significant_bit == 0){
+                coding_byte = coding_byte & 0xFC;
+            }
+            if (significant_bit == 10){
+                coding_byte = coding_byte | 0x0D;
+                coding_byte = coding_byte & 0xFE;
+            }
+            if (significant_bit == 11){
+                coding_byte = coding_byte | 0x03;
+            }*/
+
             out.put(coding_byte);
         }
     }
