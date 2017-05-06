@@ -1,30 +1,4 @@
-#ifndef RAWHEAD_HPP
-#define RAWHEAD_HPP
-
-#include "basehead.hpp"
-const unsigned KB = 1024;
-const unsigned B = 8;
-
-class  RawHeader : public BaseHeader{
-public:
-    unsigned bitrate() const;
-    unsigned samplerate() const;
-    bool is_correct() const;
-    bool crc_present() const;
-    bool padding_present() const;
-    bool is_valid_header() const;
-
-    friend std::istream& operator >>(std::istream&, RawHeader&);
-    friend std::ofstream& operator <<(std::ofstream&, RawHeader&);
-    void read_byte(std::ifstream&);
-
-    const unsigned char& operator [](unsigned position) const;
-    unsigned char &operator [](unsigned position);
-
-private:
-    unsigned char data[RAW_HEADER_SIZE];
-
-};
+#include "raw_head.h"
 
 bool RawHeader::is_correct() const{
     if ((data[0] & 0xFF) != 0xFF) {
@@ -113,7 +87,12 @@ void RawHeader::read_byte(std::ifstream& src) {
     }
     char buf;
     src.get(buf);
-    data[3] = (unsigned char) buf;
+    try {
+        data[3] = (unsigned char) buf;
+    }
+    catch (std::istream::failure) {
+        std::cerr << "Exception reading file";
+    }
 }
 
 const unsigned char& RawHeader::operator [](unsigned position) const {
@@ -132,9 +111,14 @@ std::istream& operator>>(std::istream& src, RawHeader& dst) {
     //The » stream operator reads formatted input and so it will
     // skip some characters when reading the file.
     char bufdata;
-    for (unsigned i = 0; i < RAW_HEADER_SIZE; ++i) {
-        src.get(bufdata);
-        dst.data[i] = (unsigned char) bufdata;
+    try {
+        for (unsigned i = 0; i < RAW_HEADER_SIZE; ++i) {
+            src.get(bufdata);
+            dst.data[i] = (unsigned char) bufdata;
+        }
+    }
+    catch (std::istream::failure) {
+        std::cerr << "Exception reading file";
     }
 
     return src;
@@ -150,5 +134,3 @@ std::ofstream& operator <<(std::ofstream& dst, RawHeader& src) {
     return dst;
 }
 
-
-#endif // RAWHEAD_HPP

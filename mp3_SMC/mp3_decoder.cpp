@@ -1,33 +1,21 @@
-#ifndef MP3DECODER_HPP
-#define MP3DECODER_HPP
+#ifndef MP3_DECODER_CPP
+#define MP3_DECODER_CPP
 
-#include <fstream>
-#include <bitset>
-#include <vector>
-#include <algorithm>
+#include "mp3_decoder.h"
 
-#include "head.hpp"
-#include "file_func.hpp"
-#include "mp3encoder.hpp"
-
-class mp3Decoder {
-public:
-    static bool decode(std::ifstream& in);
-
-private:
-    static std::string create_message(std::vector<unsigned> &code_message);
-    static char create_symb(std::vector<unsigned> &code);
-    static void skip_byte(std::ifstream &in);
-
-    static bool search_valid_header(std::ifstream &in, RawHeader& header);
-};
-
-void mp3Decoder::skip_byte(std::ifstream &in) {
+void mp3_decoder::skip_byte(std::ifstream &in) {
     char bufbyte;
-    in.get(bufbyte);
+    try {
+        in.get(bufbyte);
+    }
+    catch (std::istream::failure) {
+        std::cerr << "Exception reading file";
+    }
 }
 
-bool mp3Decoder::decode(std::ifstream &in) {
+const std::string mp3_decoder::decode() {
+
+    std::ifstream in(input_file, std::ios::in | std::ios::binary);
 
     std::vector <unsigned> bit_message;
     RawHeader header;
@@ -42,7 +30,12 @@ bool mp3Decoder::decode(std::ifstream &in) {
             }
 
             char coding_byte = 0;
-            in.get(coding_byte);
+            try {
+                in.get(coding_byte);
+            }
+            catch (std::istream::failure) {
+                std::cerr << "Exception reading file";
+            }
             unsigned variable = (unsigned) ((coding_byte & 0x01) == 0x01);
             bit_message.push_back(variable);
 
@@ -61,19 +54,13 @@ bool mp3Decoder::decode(std::ifstream &in) {
         }
     }
 
-    std::cout << "decoded bit message: ";
-    for (auto i : bit_message) {
-        std::cout << i << " ";
-    }
-    std::cout << std::endl;
     std::string message = create_message(bit_message);
-    std::cout << "message: " <<"|" << message << "|" << std::endl;
 
-    return true;
+    return message;
 
 }
 
-char mp3Decoder::create_symb(std::vector<unsigned>& code){
+char mp3_decoder::create_symb(std::vector<unsigned>& code){
 
     unsigned result = 0;
     std::reverse(code.begin(), code.end());
@@ -85,7 +72,7 @@ char mp3Decoder::create_symb(std::vector<unsigned>& code){
     return result_symb;
 }
 
-std::string mp3Decoder::create_message(std::vector<unsigned>& code_message){
+std::string mp3_decoder::create_message(std::vector<unsigned>& code_message){
 
     std::string str_message;
 
@@ -101,7 +88,7 @@ std::string mp3Decoder::create_message(std::vector<unsigned>& code_message){
     return str_message;
 }
 
-bool mp3Decoder::search_valid_header(std::ifstream &in, RawHeader& header){
+bool mp3_decoder::search_valid_header(std::ifstream &in, RawHeader& header){
     in >> header;
     while (!header.is_valid_header() && !in.fail()) {
         header.read_byte(in);
@@ -109,4 +96,4 @@ bool mp3Decoder::search_valid_header(std::ifstream &in, RawHeader& header){
     return !in.fail();
 }
 
-#endif // MP3DECODER_HPP
+#endif // MP3_DECODER_CPP

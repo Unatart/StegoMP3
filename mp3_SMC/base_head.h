@@ -1,11 +1,9 @@
-#ifndef BASEHEAD_H
-#define BASEHEAD_H
+#ifndef BASE_HEAD_H
+#define BASE_HEAD_H
 
 #include <fstream>
 #include <iostream>
-
-const unsigned RAW_HEADER_SIZE = 4;
-const unsigned BITS_PER_SAMPLE = 144;
+#include "io.h"
 
 class BaseHeader {
 public:
@@ -14,4 +12,4 @@ public:
     virtual bool padding_present() const = 0;
 };
 
-#endif // BASEHEAD_H
+#endif // BASE_HEAD_H

@@ -1,30 +1,4 @@
-#ifndef HEAD_HPP
-#define HEAD_HPP
-
-#include "basehead.hpp"
-#include "rawhead.hpp"
-
-class Header : public BaseHeader{
-public:
-
-    Header() = default;
-    Header(const RawHeader&);
-
-    unsigned frame_size() const;
-    bool is_correct() const;
-    bool crc_present() const;
-    bool padding_present() const;
-
-    friend std::istream& operator >>(std::istream&, Header&);
-
-private:
-    bool correct = false;
-    bool crc = false;
-    unsigned bitrate = 0;
-    unsigned samplerate = 0;
-    bool padding = false;
-};
-
+#include "head.h"
 
 bool Header::is_correct() const {
     return correct;
@@ -63,5 +37,3 @@ Header::Header(const RawHeader& init) {
     samplerate = init.samplerate();
     padding = init.padding_present();
 }
-
-#endif // HEAD_HPP
