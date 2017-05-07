@@ -4,7 +4,8 @@
 #include "base_head.h"
 #include "io.h"
 
-class  RawHeader : public BaseHeader{
+class  raw_header : public base_header
+{
 public:
     unsigned bitrate() const;
     unsigned samplerate() const;
@@ -13,8 +14,8 @@ public:
     bool padding_present() const;
     bool is_valid_header() const;
 
-    friend std::istream& operator >>(std::istream&, RawHeader&);
-    friend std::ofstream& operator <<(std::ofstream&, RawHeader&);
+    friend std::istream& operator >>(std::istream&, raw_header&);
+    friend std::ofstream& operator <<(std::ofstream&, raw_header&);
     void read_byte(std::ifstream&);
 
     const unsigned char& operator [](unsigned position) const;

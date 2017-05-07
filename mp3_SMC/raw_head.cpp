@@ -1,6 +1,6 @@
 #include "raw_head.h"
 
-bool RawHeader::is_correct() const{
+bool raw_header::is_correct() const{
     if ((data[0] & 0xFF) != 0xFF) {
         return false;
     }
@@ -11,15 +11,15 @@ bool RawHeader::is_correct() const{
     return (data[1] & 0x1A) == 0x1A; // check format for mpeg-1 layer 3
 }
 
-bool RawHeader::crc_present() const {
+bool raw_header::crc_present() const {
     return data[1] & 0x01;
 }
 
-bool RawHeader::padding_present() const {
+bool raw_header::padding_present() const {
     return data[2] & 0x02;
 }
 
-unsigned RawHeader::bitrate() const {
+unsigned raw_header::bitrate() const {
     unsigned char chk = data[2] & 0xF0;
     if (chk == 0x10) {
         return 32 * KB;
@@ -67,7 +67,7 @@ unsigned RawHeader::bitrate() const {
     return 0;
 }
 
-unsigned RawHeader::samplerate() const {
+unsigned raw_header::samplerate() const {
     unsigned char chk = data[2] & 0x0C;
     if (chk == 0x00) {
         return 44100;
@@ -81,7 +81,7 @@ unsigned RawHeader::samplerate() const {
     return 0; // incorrect data
 }
 
-void RawHeader::read_byte(std::ifstream& src) {
+void raw_header::read_byte(std::ifstream& src) {
     for (unsigned i = 0; i < 3; ++i) {
         data[i] = data[i + 1];
     }
@@ -91,23 +91,23 @@ void RawHeader::read_byte(std::ifstream& src) {
         data[3] = (unsigned char) buf;
     }
     catch (std::istream::failure) {
-        std::cerr << "Exception reading file";
+        throw common_exception("File fail.");
     }
 }
 
-const unsigned char& RawHeader::operator [](unsigned position) const {
+const unsigned char& raw_header::operator [](unsigned position) const {
     return *(data + position);
 }
 
-unsigned char& RawHeader::operator [](unsigned position) {
+unsigned char& raw_header::operator [](unsigned position) {
     return *(data + position);
 }
 
-bool RawHeader::is_valid_header() const {
+bool raw_header::is_valid_header() const {
     return (is_correct() && bitrate() && samplerate());
 }
 
-std::istream& operator>>(std::istream& src, RawHeader& dst) {
+std::istream& operator>>(std::istream& src, raw_header& dst) {
     //The » stream operator reads formatted input and so it will
     // skip some characters when reading the file.
     char bufdata;
@@ -118,13 +118,13 @@ std::istream& operator>>(std::istream& src, RawHeader& dst) {
         }
     }
     catch (std::istream::failure) {
-        std::cerr << "Exception reading file";
+        throw common_exception("File fail.");
     }
 
     return src;
 }
 
-std::ofstream& operator <<(std::ofstream& dst, RawHeader& src) {
+std::ofstream& operator <<(std::ofstream& dst, raw_header& src) {
     char bufdata;
     for (unsigned i = 0; i < RAW_HEADER_SIZE; ++i) {
         bufdata = src.data[i];

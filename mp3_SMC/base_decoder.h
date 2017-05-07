@@ -2,6 +2,7 @@
 #define BASE_DECODER_HPP
 
 #include <string>
+#include "base_exception.h"
 
 class base_decoder
 {

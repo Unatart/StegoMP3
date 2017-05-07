@@ -11,7 +11,7 @@ SOURCES += main.cpp \
     mp3_decoder.cpp \
     mp3_encoder.cpp \
     raw_head.cpp \
-    base_head.cpp
+    head.cpp
 
 HEADERS += \
     base_encoder.h \
@@ -21,4 +21,5 @@ HEADERS += \
     mp3_encoder.h \
     base_head.h \
     raw_head.h \
+    base_exception.h \
     io.h

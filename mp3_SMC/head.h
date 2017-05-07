@@ -4,18 +4,19 @@
 #include "base_head.h"
 #include "raw_head.h"
 
-class Header : public BaseHeader{
+class header : public base_header
+{
 public:
 
-    Header() = default;
-    Header(const RawHeader&);
+    header() = default;
+    header(const raw_header&);
 
     unsigned frame_size() const;
     bool is_correct() const;
     bool crc_present() const;
     bool padding_present() const;
 
-    friend std::istream& operator >>(std::istream&, Header&);
+    friend std::istream& operator >>(std::istream&, header&);
 
 private:
     bool correct = false;

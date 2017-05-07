@@ -4,8 +4,10 @@
 #include <fstream>
 #include <iostream>
 #include "io.h"
+#include "base_exception.h"
 
-class BaseHeader {
+class base_header
+{
 public:
     virtual bool is_correct() const = 0;
     virtual bool crc_present() const = 0;

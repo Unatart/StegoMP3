@@ -1,24 +1,24 @@
 #include "head.h"
 
-bool Header::is_correct() const {
+bool header::is_correct() const {
     return correct;
 }
 
-bool Header::crc_present() const {
+bool header::crc_present() const {
     return crc;
 }
 
-bool Header::padding_present() const {
+bool header::padding_present() const {
     return padding;
 }
 
-unsigned Header::frame_size() const {
+unsigned header::frame_size() const {
     return BITS_PER_SAMPLE * bitrate / samplerate + (unsigned) padding;
 }
 
-std::istream& operator>>(std::istream& src, Header& dst) {
+std::istream& operator>>(std::istream& src, header& dst) {
 
-    RawHeader buffer;
+    raw_header buffer;
     src >> buffer;
 
     dst.bitrate = buffer.bitrate();
@@ -30,7 +30,7 @@ std::istream& operator>>(std::istream& src, Header& dst) {
     return src;
 }
 
-Header::Header(const RawHeader& init) {
+header::header(const raw_header& init) {
     correct = init.is_correct();
     crc = init.crc_present();
     bitrate = init.bitrate();

@@ -9,7 +9,7 @@ void mp3_decoder::skip_byte(std::ifstream &in) {
         in.get(bufbyte);
     }
     catch (std::istream::failure) {
-        std::cerr << "Exception reading file";
+        throw common_exception("File fail.");
     }
 }
 
@@ -18,11 +18,11 @@ const std::string mp3_decoder::decode() {
     std::ifstream in(input_file, std::ios::in | std::ios::binary);
 
     std::vector <unsigned> bit_message;
-    RawHeader header;
+    raw_header Header;
 
-    for (unsigned k = 0; search_valid_header(in, header); ++k) {
+    for (unsigned k = 0; search_valid_header(in, Header); ++k) {
         if (k % sampling_frequency == 0) {
-            Header bufHeader(header);
+            header bufHeader(Header);
 
             unsigned to_skip = bufHeader.frame_size() + ((unsigned) bufHeader.crc_present()) * crc_bytes - 1;
             for (unsigned i = 0; i < to_skip; ++i) {
@@ -34,7 +34,7 @@ const std::string mp3_decoder::decode() {
                 in.get(coding_byte);
             }
             catch (std::istream::failure) {
-                std::cerr << "Exception reading file";
+                throw common_exception("File fail.");
             }
             unsigned variable = (unsigned) ((coding_byte & 0x01) == 0x01);
             bit_message.push_back(variable);
@@ -88,11 +88,18 @@ std::string mp3_decoder::create_message(std::vector<unsigned>& code_message){
     return str_message;
 }
 
-bool mp3_decoder::search_valid_header(std::ifstream &in, RawHeader& header){
+bool mp3_decoder::search_valid_header(std::ifstream &in, raw_header& header){
     in >> header;
+
     while (!header.is_valid_header() && !in.fail()) {
-        header.read_byte(in);
+        try {
+           header.read_byte(in);
+        }
+        catch (std::istream::failure) {
+            throw common_exception("File fail.");
+        }
     }
+
     return !in.fail();
 }
 

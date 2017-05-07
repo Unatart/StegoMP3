@@ -17,7 +17,7 @@ private:
     std::string create_message(std::vector<unsigned> &code_message);
     char create_symb(std::vector<unsigned> &code);
     void skip_byte(std::ifstream &in);
-    bool search_valid_header(std::ifstream &in, RawHeader& header);
+    bool search_valid_header(std::ifstream &in, raw_header& header);
 };
 
 #endif // MP3_DECODER_H
